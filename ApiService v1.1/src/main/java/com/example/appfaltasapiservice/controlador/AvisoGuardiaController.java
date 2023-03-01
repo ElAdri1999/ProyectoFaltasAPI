@@ -39,6 +39,7 @@ public class AvisoGuardiaController {
 		return avisoGuardiaRepositorio.findAll();
 	}
 	
+	//Metodo usado para crear avisos de guardia
 	@PostMapping("/crear-aviso")
 	public ResponseEntity<?> crearAviso(@RequestBody AvisoGuardia aviso, @RequestHeader("key") String key) {
 		if(!AppFaltasApiServiceApplication.validarKey(key)) return null;

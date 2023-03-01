@@ -43,6 +43,7 @@ public class GuardiaController {
 		return guardiaRepositorio.findAll();
 	}
 	
+	//Metodo para sacar la guardia designada por el id
 	@GetMapping("guardias/{id}")
 	public ResponseEntity<?> guardiasDeProfesor(@PathVariable String id, @RequestHeader("key") String key) {
 		if(!AppFaltasApiServiceApplication.validarKey(key)) return null;
@@ -63,6 +64,7 @@ public class GuardiaController {
 		return ResponseEntity.ok(guardias);
 	}
 	
+	//Metodo para sacar el horario de la guardia dada por un id
 	@GetMapping("/guardias-por-horario/{id}")
 	public ResponseEntity<?> guardiasPorHorario(@PathVariable String id, @RequestHeader("key") String key) {
 		if(!AppFaltasApiServiceApplication.validarKey(key)) return null;
@@ -95,6 +97,7 @@ public class GuardiaController {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sin resultados");
 	}
 	
+	//Metodo para modificar la guardia dada por un id
 	@PutMapping("/modificar-guardia/{id}")
 	public ResponseEntity<?> modificarGuardia(@RequestBody Guardia guardia, @PathVariable int id, @RequestHeader("key") String key) {
 		if(!AppFaltasApiServiceApplication.validarKey(key)) return null;
@@ -110,6 +113,7 @@ public class GuardiaController {
 		return ResponseEntity.ok(guardiaRepositorio.save(g));
 	}
 	
+	//Anular la guardia especificada por el id
 	@PutMapping("anular-guardia/{id}")
 	public ResponseEntity<?> anularGuardia(@RequestBody Guardia guardia, @PathVariable int id, @RequestHeader("key") String key) {
 		if(!AppFaltasApiServiceApplication.validarKey(key)) return null;

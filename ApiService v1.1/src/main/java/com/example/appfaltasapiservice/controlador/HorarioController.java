@@ -32,6 +32,7 @@ public class HorarioController {
 		return ResponseEntity.ok(horarioRepositorio.findAll());
 	}
 	
+	//Extrae los horarios de un profesor dado un id
 	@GetMapping("horario-profesor/{id}")
 	public ResponseEntity<?> horariosDeProfesor(@PathVariable String id, @RequestHeader("key") String key) {
 		if(!AppFaltasApiServiceApplication.validarKey(key)) return null;

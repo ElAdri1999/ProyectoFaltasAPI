@@ -12,12 +12,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.appfaltasapiservice.modelo.Profesor;
+import com.example.appfaltasapiservice.modelo.ProfesorTienePerfil;
 import com.example.appfaltasapiservice.modelo.wrappers.Profesores_datos_WR;
 import com.example.appfaltasapiservice.repositorio.ProfesorRepositorio;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 
 @RestController
@@ -70,7 +73,8 @@ public class ProfesorController {
 		return ResponseEntity.ok(profesor.getId() + "," + profesor.getNombre() + "," + profesor.getApe1() + ","
 				+ profesor.getApe2() + "," + profesor.getDni());
 	}
-
+	
+	//Obsoleto
 	@GetMapping("/profesor/{user},{passwd}")
 	public ResponseEntity<?> obtenerKey(@PathVariable String user, @PathVariable String passwd) {
 		List<Profesor> profesores = profesorRepositorio.findAll();
@@ -87,6 +91,7 @@ public class ProfesorController {
 		return ResponseEntity.ok(APIKey.getUser() + APIKey.getPassword());
 	}
 
+	//Metodo login de usuarios normales.
 	@PostMapping("/login")
 	public ResponseEntity<?> validateUser(@RequestHeader("user") String usuario, @RequestHeader("pswd") String contra) {
 		try {
@@ -101,6 +106,27 @@ public class ProfesorController {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado");
 			}
 		} catch (NoResultException ex) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del sistema");
+		}
+	}
+	
+	//Metodo login de usuarios administradores.
+	@PostMapping("/loginAdmin")
+	public ResponseEntity<?> validateUserAdmin(@RequestHeader("user") String usuario, @RequestHeader("pswd") String contra) {
+		try {		
+			
+			TypedQuery<Profesor> q = em.createQuery("SELECT p FROM Profesor p JOIN ProfesorTienePerfil pp ON p.id = pp.profesor WHERE p.user = :user AND p.password = :pswd AND (pp.perfil = 2 OR pp.perfil = 4)", Profesor.class);
+			q.setParameter("user", usuario);
+			q.setParameter("pswd", contra);
+			
+			List<Profesor> profesor = q.getResultList();
+			
+			if(!profesor.isEmpty()) {
+				return ResponseEntity.ok(profesor);
+			}else {
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Acceso denegado");
+			}
+		} catch (PersistenceException ex) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error del sistema");
 		}
 	}
