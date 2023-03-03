@@ -43,6 +43,17 @@ public class GuardiaController {
 		return guardiaRepositorio.findAll();
 	}
 	
+	@GetMapping("guardia/{id}")
+	public ResponseEntity<?> obtenerGuardia(@PathVariable int id, @RequestHeader("key") String key) {
+		if(!AppFaltasApiServiceApplication.validarKey(key)) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sin resultados");
+		
+		Guardia guardia = guardiaRepositorio.findById(id).orElse(null);
+		if(guardia == null) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sin resultados");
+		}
+		return ResponseEntity.ok(guardia);
+	}
+	
 	//Metodo para sacar la guardia designada por el id
 	@GetMapping("guardias/{id}")
 	public ResponseEntity<?> guardiasDeProfesor(@PathVariable String id, @RequestHeader("key") String key) {
