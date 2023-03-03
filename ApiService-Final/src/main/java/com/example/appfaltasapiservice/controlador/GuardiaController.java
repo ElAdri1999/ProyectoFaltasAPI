@@ -44,8 +44,7 @@ public class GuardiaController {
 	}
 	
 	@GetMapping("guardia/{id}")
-	public ResponseEntity<?> obtenerGuardia(@PathVariable int id, @RequestHeader("key") String key) {
-		if(!AppFaltasApiServiceApplication.validarKey(key)) return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Sin resultados");
+	public ResponseEntity<?> obtenerGuardia(@PathVariable int id) {
 		
 		Guardia guardia = guardiaRepositorio.findById(id).orElse(null);
 		if(guardia == null) {
